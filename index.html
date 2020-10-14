@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		body{
+			background-color: #f3d5dd;
+		}
+    </style>
+	<title>Water sharing</title>
+	<script type="text/javascript">
+		let a={'c':19,'r':0},b={'c':13,'r':13},c={'c':7,'r':7};
+		let found=false;
+		let transferFluid=(x,y)=>{
+			if(y.r+x.r<=y.c) {				
+				y.r+=x.r;
+				x.r=0;
+			}
+			else{
+				x.r-=(y.c-y.r);
+				y.r=y.c;
+				
+			}
+		}
+		let performOperation=(a,b,c,lisx=[])=>{
+			if(lisx.length>50)
+			{
+				console.log('Overflow...exiting now');
+				if(!found)
+				document.querySelector('#y').innerHTML='overflow';
+				return false;
+			}
+			if((a.r==5 && b.r==5) || (a.r==5 && c.r==5) || (b.r==5 && c.r==5))
+			{
+				document.querySelector('#y').innerHTML=JSON.stringify(lisx);
+				found=true;
+				return true;
+
+			}
+			let vessels=[a,b,c];
+			let lis=[...lisx];
+			for(let i in vessels){
+				let obj1={...vessels[i]},obj2={...vessels[addn(i,1)]},obj3={...vessels[addn(i,2)]};
+				transferFluid(obj1,obj2);
+				lis.push([i,addn(i,1)])
+				performOperation(obj1,obj2,obj3,lis);
+				obj1={...vessels[i]},obj2={...vessels[addn(i,1)]},obj3={...vessels[addn(i,2)]};
+				transferFluid(obj1,obj3);
+				lis.pop();
+				lis.push([i,addn(i,2)])
+				performOperation(obj1,obj2,obj3,lis);
+			}
+
+		}
+		let addn=(x,y)=>{
+			return (x+y>2)?(x+y-3):x+y;
+		}
+		// performOperation(a,b,c);
+	</script>
+</head>
+<body>
+	<div id="x">
+		<h1 id='y'></h1>
+	</div>
+</body>
+</html>
